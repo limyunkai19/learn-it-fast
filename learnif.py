@@ -33,6 +33,7 @@ torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
+
 train_loader, test_loader = datasets.mnist(download=False)
 
 if args.cuda:
@@ -44,4 +45,4 @@ criterion = nn.CrossEntropyLoss()
 if args.cuda:
     criterion.cuda()
 
-model_fit(cnn, train_loader, criterion, optimizer, epochs=10, validation=test_loader, cuda=args.cuda)
+history = model_fit(cnn, train_loader, criterion, optimizer, epochs=1, validation=test_loader, cuda=args.cuda)
