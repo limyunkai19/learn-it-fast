@@ -1,5 +1,7 @@
 from torch.autograd import Variable
 
+import os
+import json
 import time
 
 class History:
@@ -7,6 +9,22 @@ class History:
         self.meta = {}
         self.epoch_history = {}
         self.iter_history = {}
+
+    def get_dict(self):
+        hist =  {
+                    'meta': self.meta,
+                    'epoch_history': self.epoch_history,
+                    'iter_history': self.iter_history
+                }
+        return hist
+
+    def from_dict(self, hist):
+        self.meta = hist['meta']
+        self.epoch_history = hist['epoch_history']
+        self.iter_history = hist['iter_history']
+
+    # def visualize(self, iter=False):
+
 
 def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=None, cuda=False):
     history = History()
@@ -115,3 +133,62 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
                 toc-tic, loss, acc))
 
     return history
+
+def model_eval(model, test_loader, criterion, cuda=False, verbose=True):
+    tic = time.time()
+    model.eval()
+    total_loss = 0
+    total_correct = 0
+    for data, target in test_loader:
+        if cuda:
+            data, target = data.cuda(), target.cuda()
+        data, target = Variable(data, volatile=True), Variable(target)
+
+        # forward
+        output = model(data)
+        loss = criterion(output, target)
+
+        # log stats
+        total_loss += loss.data[0]*len(target)
+        correct = target.eq(output.max(dim=1)[1]).sum().data[0]
+        total_correct += correct
+    toc = time.time()
+
+    loss = total_loss/len(test_loader.dataset)
+    acc = total_correct/len(test_loader.dataset)
+    print("Test - {}s - loss: {} - acc: {}/{} {}".format(
+            toc-tic, loss, total_correct, len(test_loader.dataset), acc))
+
+def model_save(model, history, name, base_path='results'):
+    if not os.path.isdir(base_path):
+        os.mkdir(base_path)
+
+    working_name = name
+    i = 0
+    while os.path.exists(os.sep.join([base_path, working_name])):
+        i += 1
+        working_name = name + str(i)
+
+    working_dir = os.sep.join([base_path, working_name])
+    os.mkdir(working_dir)
+
+    model.save_state_dict(os.sep.join([working_dir, 'model.pt']))
+    f = open(os.sep.join([working_dir, 'history.json']), 'w')
+    json.dump(history.get_dict(), f)
+    f.close()
+
+def model_load(model, name, base_path='results'):
+    working_dir = os.sep.join([base_path, name])
+    if not os.path.isdir(working_dir):
+        print("Saves not found")
+        return None, None
+
+    # todo implement model meta and use generic model loader
+    # instead of passing existing model
+    model.load_state_dict(torch.load(os.sep.join([working_dir], 'model.pt')))
+    f = open(os.sep.join([working_dir, 'history.json']), 'r')
+    hist = json.load(f)
+    f.close()
+    history = History().from_dict(hist)
+
+    return model, history

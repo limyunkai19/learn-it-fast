@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 import models, datasets
-from utils import model_fit
+from utils import model_fit, model_save
 
 # Command line argument
 parser = argparse.ArgumentParser(description='Transfer Learning Train')
@@ -45,4 +45,8 @@ criterion = nn.CrossEntropyLoss()
 if args.cuda:
     criterion.cuda()
 
-history = model_fit(cnn, train_loader, criterion, optimizer, epochs=1, validation=test_loader, cuda=args.cuda)
+history = model_fit(cnn, train_loader, criterion, optimizer, epochs=10, validation=test_loader, cuda=args.cuda)
+
+# history.visualize()
+model_save(cnn, history, save_path)
+# cnn, history = model_load(save_path)
