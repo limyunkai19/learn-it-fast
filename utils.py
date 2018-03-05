@@ -78,7 +78,7 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
 
             # log stats
             total_loss += loss.data[0]*len(target)
-            correct = target.eq(output.max(dim=1)[1]).sum().data[0]
+            correct = target.eq(output.max(dim=1)[1]).short().sum().data[0]
             total_correct += correct
             history.iter_history['loss'].append(loss.data[0])
             history.iter_history['acc'].append(correct/len(target))
@@ -117,7 +117,7 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
 
             # log stats
             total_loss += loss.data[0]*len(target)
-            correct = target.eq(output.max(dim=1)[1]).sum().data[0]
+            correct = target.eq(output.max(dim=1)[1]).short().sum().data[0]
             total_correct += correct
             history.iter_history['val_loss'].append(loss.data[0])
             history.iter_history['val_acc'].append(correct/len(target))
@@ -153,7 +153,7 @@ def model_eval(model, test_loader, criterion, cuda=False, verbose=True):
 
         # log stats
         total_loss += loss.data[0]*len(target)
-        correct = target.eq(output.max(dim=1)[1]).sum().data[0]
+        correct = target.eq(output.max(dim=1)[1]).short().sum().data[0]
         total_correct += correct
     toc = time.time()
 
