@@ -24,6 +24,8 @@ class History:
         self.epoch_history = hist['epoch_history']
         self.iter_history = hist['iter_history']
 
+        return self
+
     # def visualize(self, iter=False):
 
 
@@ -186,7 +188,7 @@ def model_load(model, name, base_path='results'):
 
     # todo implement model meta and use generic model loader
     # instead of passing existing model
-    model.load_state_dict(torch.load(os.sep.join([working_dir], 'model.pth')))
+    model.load_state_dict(torch.load(os.sep.join([working_dir, 'model.pth'])))
     f = open(os.sep.join([working_dir, 'history.json']), 'r')
     hist = json.load(f)
     f.close()
