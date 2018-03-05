@@ -1,3 +1,4 @@
+import torch
 from torch.autograd import Variable
 
 import os
@@ -172,7 +173,7 @@ def model_save(model, history, name, base_path='results'):
     working_dir = os.sep.join([base_path, working_name])
     os.mkdir(working_dir)
 
-    model.save_state_dict(os.sep.join([working_dir, 'model.pt']))
+    torch.save(model.state_dict(), os.sep.join([working_dir, 'model.pth']))
     f = open(os.sep.join([working_dir, 'history.json']), 'w')
     json.dump(history.get_dict(), f)
     f.close()
@@ -185,7 +186,7 @@ def model_load(model, name, base_path='results'):
 
     # todo implement model meta and use generic model loader
     # instead of passing existing model
-    model.load_state_dict(torch.load(os.sep.join([working_dir], 'model.pt')))
+    model.load_state_dict(torch.load(os.sep.join([working_dir], 'model.pth')))
     f = open(os.sep.join([working_dir, 'history.json']), 'r')
     hist = json.load(f)
     f.close()

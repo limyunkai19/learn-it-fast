@@ -20,7 +20,7 @@ parser.add_argument('--pretrained', action='store_true', default=False,
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
-                    help='random seed replicable result (default: 1)')
+                    help='random seed for replicable result (default: 1)')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -34,7 +34,7 @@ if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
 
-train_loader, test_loader = datasets.mnist(download=False)
+train_loader, test_loader = datasets.mnist(batch_size=args.batch_size, download=False)
 
 if args.cuda:
     cnn.cuda()
@@ -48,5 +48,5 @@ if args.cuda:
 history = model_fit(cnn, train_loader, criterion, optimizer, epochs=10, validation=test_loader, cuda=args.cuda)
 
 # history.visualize()
-model_save(cnn, history, save_path)
+model_save(cnn, history, "save_path")
 # cnn, history = model_load(save_path)
