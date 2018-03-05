@@ -21,6 +21,8 @@ parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed for replicable result (default: 1)')
+parser.add_argument('--saves', metavar='NAME',
+                    help='the name to saves the model after training (default: None, it dont saves)')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -45,8 +47,8 @@ criterion = nn.CrossEntropyLoss()
 if args.cuda:
     criterion.cuda()
 
-history = model_fit(cnn, train_loader, criterion, optimizer, epochs=10, validation=test_loader, cuda=args.cuda)
+history = model_fit(cnn, train_loader, criterion, optimizer,
+                        epochs=args.epochs, validation=test_loader, cuda=args.cuda)
 
-# history.visualize()
-model_save(cnn, history, "save_path")
-# cnn, history = model_load(save_path)
+if args.saves is not None:
+    model_save(cnn, history, args.saves)
