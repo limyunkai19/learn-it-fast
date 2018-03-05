@@ -3,7 +3,7 @@ from torchvision import transforms, datasets
 
 def cifar10(download=True, num_workers=2, batch_size=64, img_size=(224,224)):
     transform = transforms.Compose([
-                    transforms.Resize(size),
+                    transforms.Resize(img_size),
                     transforms.ToTensor(),
                     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616))
                 ])
