@@ -3,7 +3,7 @@ from torchvision import transforms
 
 from .torchvision_mnist_master import MNIST
 
-def mnist(download=True, num_workers=2, batch_size=64, img_size=(224,224)):
+def mnist(download=False, num_workers=2, batch_size=64, img_size=(224,224)):
     transform = transforms.Compose([
                     transforms.Resize(img_size),
                     transforms.Grayscale(3),

@@ -1,7 +1,7 @@
 import torch
 from torchvision import transforms, datasets
 
-def cifar100(download=True, num_workers=2, batch_size=64, img_size=(224,224)):
+def cifar100(download=False, num_workers=2, batch_size=64, img_size=(224,224)):
     transform = transforms.Compose([
                     transforms.Resize(img_size),
                     transforms.ToTensor(),
