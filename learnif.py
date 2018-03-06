@@ -17,6 +17,8 @@ parser.add_argument('--lr', type=float, default=1e-4, metavar='LR',
                     help='learning rate (default: 0.001)')
 parser.add_argument('--pretrained', action='store_true', default=False,
                     help='use pretrained model')
+parser.add_argument('--dataset', default='mnist', metavar='DATASET',
+                    help='dataset for training')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
@@ -24,19 +26,26 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
 parser.add_argument('--saves', metavar='NAME',
                     help='the name to saves the model after training (default: None, it dont saves)')
 args = parser.parse_args()
+
+
 args.cuda = not args.no_cuda and torch.cuda.is_available()
+if args.dataset not in datasets.available_datasets:
+    print("Dataset not available")
+    exit()
+
+num_classes = datasets.num_classes[args.dataset]
 
 if args.pretrained:
-    cnn = models.alexnet(10)
+    cnn = models.alexnet(num_classes)
 else:
-    cnn = torchvision.models.alexnet(pretrained=False, num_classes=10)
+    cnn = torchvision.models.alexnet(pretrained=False, num_classes=num_classes)
 
 torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
-
-train_loader, test_loader = datasets.mnist(batch_size=args.batch_size, download=False)
+dataset = datasets.__dict__[args.dataset]
+train_loader, test_loader = dataset(batch_size=args.batch_size, download=False)
 
 if args.cuda:
     cnn.cuda()
