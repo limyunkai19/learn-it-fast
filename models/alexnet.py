@@ -2,6 +2,9 @@ import torch, torchvision
 
 from .utils import apply_mode
 
+__all__ = ['alexnet']
+
+
 def alexnet(num_classes=1000, pretrained=4, mode=('freeze', 'fine-tune')):
     if pretrained == -1:
         return torchvision.models.alexnet(pretrained=False, num_classes=num_classes)

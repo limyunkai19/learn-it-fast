@@ -2,6 +2,9 @@ import torch, torchvision
 
 from .utils import apply_mode
 
+__all__ = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
+
+
 def resnet(resnet_name='resnet50', num_classes=1000, pretrained=4, mode=('freeze', 'fine-tune')):
     resnet_model = torchvision.models.__dict__[resnet_name]
     if pretrained == -1:
