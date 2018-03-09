@@ -195,3 +195,25 @@ def model_load(model, name, base_path='results'):
     history = History().from_dict(hist)
 
     return model, history
+
+def prod(lists):
+    ans = 1
+    for i in lists:
+        ans *= i
+    return ans
+
+def num_param(model):
+    ans = 0
+    for param in model.parameters():
+        ans += prod(param.size())
+
+    return ans
+
+
+def num_trainable_param(model):
+    ans = 0
+    for param in model.parameters():
+        if param.requires_grad:
+            ans += prod(param.size())
+
+    return ans
