@@ -3,11 +3,11 @@ import torch, torchvision
 from .utils import apply_mode
 
 def alexnet(num_classes=1000, pretrained=4, mode=('freeze', 'fine-tune')):
-    neural_network = torchvision.models.alexnet(pretrained=True)
-    neural_network.classifier._modules['6'] = torch.nn.Linear(4096, num_classes)
-
     if pretrained == -1:
         return torchvision.models.alexnet(pretrained=False, num_classes=num_classes)
+
+    neural_network = torchvision.models.alexnet(pretrained=True)
+    neural_network.classifier._modules['6'] = torch.nn.Linear(4096, num_classes)
 
     layers = list(neural_network.features.children()) + list(neural_network.classifier.children())
     level = [-1, 7, 12, 15, 18][pretrained]
