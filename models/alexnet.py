@@ -21,8 +21,8 @@ def alexnet(num_classes=1000, pretrained=4, mode=('freeze', 'fine-tune')):
     return neural_network
 
 # pretrained:
-#  -1 - original model (no pretrained initialization)
-#   0 - no transfered
+#  -1 - original model (no pretrained weight initialization)
+#   0 - not transfered
 #   1 - half feature transfered
 #   2 - feature transfered
 #   3 - feature + half classification transfered
