@@ -162,7 +162,7 @@ def model_eval(model, test_loader, criterion, cuda=False, verbose=True):
     print("Test - {}s - loss: {} - acc: {}/{} {}".format(
             toc-tic, loss, total_correct, len(test_loader.dataset), acc))
 
-def model_save(model, history, name, base_path='results'):
+def model_save(model, history, name, base_path='results', save_state=True):
     if not os.path.isdir(base_path):
         os.mkdir(base_path)
 
@@ -175,7 +175,8 @@ def model_save(model, history, name, base_path='results'):
     working_dir = os.sep.join([base_path, working_name])
     os.mkdir(working_dir)
 
-    torch.save(model.state_dict(), os.sep.join([working_dir, 'model.pth']))
+    if save_state:
+        torch.save(model.state_dict(), os.sep.join([working_dir, 'model.pth']))
     f = open(os.sep.join([working_dir, 'history.json']), 'w')
     json.dump(history.get_dict(), f)
     f.close()
