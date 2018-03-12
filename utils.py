@@ -218,3 +218,6 @@ def num_trainable_param(model):
             ans += prod(param.size())
 
     return ans
+
+def get_trainable_param(model):
+    return filter(lambda p: p.requires_grad, model.parameters())
