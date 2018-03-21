@@ -8,7 +8,7 @@ def mnist(download=False, num_workers=2, batch_size=64, img_size=(224,224)):
                     transforms.Resize(img_size),
                     transforms.Grayscale(3),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.1307,), (0.3081,))
+                    transforms.Normalize((0.1307, 0.1307, 0.1307), (0.3081, 0.3081, 0.3081))
                 ])
 
     train_data = MNIST(root='datasets/MNIST', train=True,

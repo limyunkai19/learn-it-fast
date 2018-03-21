@@ -8,7 +8,7 @@ def emnist(download=False, num_workers=2, batch_size=64, img_size=(224,224)):
                     transforms.Resize(img_size),
                     transforms.Grayscale(3),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.1751,), (0.3332,))
+                    transforms.Normalize((0.1751, 0.1751, 0.1751), (0.3332, 0.3332, 0.3332))
                 ])
 
     train_data = EMNIST(root='datasets/EMNIST', split="balanced", train=True,
