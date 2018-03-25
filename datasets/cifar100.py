@@ -4,16 +4,26 @@ from torchvision import transforms, datasets
 from .sampler import BalancedSubsetRandomSampler, RandomSampler
 
 
-def cifar100(download=False, num_workers=2, batch_size=64, img_size=(224,224), sample_per_class=(-1, -1)):
-    transform = transforms.Compose([
+def cifar100(download=False, num_workers=2, batch_size=64,
+                        img_size=224, sample_per_class=(-1, -1), data_augmentation=False):
+    base_transform = transforms.Compose([
                     transforms.Resize(img_size),
                     transforms.ToTensor(),
                     transforms.Normalize((0.5071, 0.4865, 0.4409), (0.2673, 0.2564, 0.2762))
                 ])
 
     # train data
+    if data_augmentation:
+        train_transform = transforms.Compose([
+                              transforms.RandomResizedCrop(224, scale=(0.25, 1)),
+                              transforms.RandomHorizontalFlip(),
+                              base_transform
+                          ])
+    else:
+        train_transform = base_transform
+
     train_data = datasets.CIFAR100(root='datasets/CIFAR100', train=True,
-                                            download=download, transform=transform)
+                                            download=download, transform=train_transform)
     if sample_per_class[0] == -1:
         train_sampler = RandomSampler(train_data)
     else:
@@ -24,7 +34,7 @@ def cifar100(download=False, num_workers=2, batch_size=64, img_size=(224,224), s
 
     # test data
     test_data = datasets.CIFAR100(root='datasets/CIFAR100', train=False,
-                                            download=download, transform=transform)
+                                            download=download, transform=base_transform)
     if sample_per_class[1] == -1:
         test_sampler = RandomSampler(test_data)
     else:

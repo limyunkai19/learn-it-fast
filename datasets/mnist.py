@@ -5,8 +5,9 @@ from .torchvision_mnist_master import MNIST
 from .sampler import BalancedSubsetRandomSampler, RandomSampler
 
 
-def mnist(download=False, num_workers=2, batch_size=64, img_size=(224,224), sample_per_class=(-1, -1)):
-    transform = transforms.Compose([
+def mnist(download=False, num_workers=2, batch_size=64,
+                        img_size=224, sample_per_class=(-1, -1), data_augmentation=False):
+    base_transform = transforms.Compose([
                     transforms.Resize(img_size),
                     transforms.Grayscale(3),
                     transforms.ToTensor(),
@@ -14,8 +15,17 @@ def mnist(download=False, num_workers=2, batch_size=64, img_size=(224,224), samp
                 ])
 
     # train data
+    if data_augmentation:
+        train_transform = transforms.Compose([
+                              transforms.RandomResizedCrop(224, scale=(0.25, 1)),
+                              transforms.RandomHorizontalFlip(),
+                              base_transform
+                          ])
+    else:
+        train_transform = base_transform
+
     train_data = MNIST(root='datasets/MNIST', train=True,
-                                            download=download, transform=transform)
+                                            download=download, transform=train_transform)
     if sample_per_class[0] == -1:
         train_sampler = RandomSampler(train_data)
     else:
@@ -26,7 +36,7 @@ def mnist(download=False, num_workers=2, batch_size=64, img_size=(224,224), samp
 
     # test data
     test_data = MNIST(root='datasets/MNIST', train=False,
-                                            download=download, transform=transform)
+                                            download=download, transform=base_transform)
     if sample_per_class[1] == -1:
         test_sampler = RandomSampler(test_data)
     else:
