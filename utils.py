@@ -34,13 +34,13 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
 
     if validation is not None:
         print("Train on {} samples, validate on {} samples".format(
-                    len(train_loader.dataset), len(validation.dataset)))
-        history.meta['train_size'] = len(train_loader.dataset)
-        history.meta['val_size'] = len(validation.dataset)
+                    len(train_loader.sampler), len(validation.sampler)))
+        history.meta['train_size'] = len(train_loader.sampler)
+        history.meta['val_size'] = len(validation.sampler)
     else:
         print("Train on {} samples, no validate samples".format(
-                    len(train_loader.dataset)))
-        history.meta['train_size'] = len(train_loader.dataset)
+                    len(train_loader.sampler)))
+        history.meta['train_size'] = len(train_loader.sampler)
 
     print("Cuda: {}".format(cuda))
 
@@ -84,12 +84,12 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
             history.iter_history['acc'].append(correct/len(target))
 
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(train_loader.dataset),
+                epoch, batch_idx * len(data), len(train_loader.sampler),
                 100. * batch_idx / len(train_loader), loss.data[0]))
         toc = time.time()
 
-        loss = total_loss/len(train_loader.dataset)
-        acc = total_correct/len(train_loader.dataset)
+        loss = total_loss/len(train_loader.sampler)
+        acc = total_correct/len(train_loader.sampler)
         history.epoch_history['loss'].append(loss)
         history.epoch_history['acc'].append(acc)
         if validation is None:
@@ -123,13 +123,13 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
             history.iter_history['val_acc'].append(correct/len(target))
         toc = time.time()
 
-        # test_loss /= len(validation.dataset)
+        # test_loss /= len(validation.sampler)
         # print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        #     test_loss, correct, len(validation.dataset),
-        #     100. * correct / len(validation.dataset)))
+        #     test_loss, correct, len(validation.sampler),
+        #     100. * correct / len(validation.sampler)))
 
-        loss = total_loss/len(validation.dataset)
-        acc = total_correct/len(validation.dataset)
+        loss = total_loss/len(validation.sampler)
+        acc = total_correct/len(validation.sampler)
         history.epoch_history['val_loss'].append(loss)
         history.epoch_history['val_acc'].append(acc)
         print("- validate - {}s - val_loss: {} - val_acc: {}".format(
@@ -157,10 +157,10 @@ def model_eval(model, test_loader, criterion, cuda=False, verbose=True):
         total_correct += correct
     toc = time.time()
 
-    loss = total_loss/len(test_loader.dataset)
-    acc = total_correct/len(test_loader.dataset)
+    loss = total_loss/len(test_loader.sampler)
+    acc = total_correct/len(test_loader.sampler)
     print("Test - {}s - loss: {} - acc: {}/{} {}".format(
-            toc-tic, loss, total_correct, len(test_loader.dataset), acc))
+            toc-tic, loss, total_correct, len(test_loader.sampler), acc))
 
 def model_save(model, history, name, base_path='results', save_state=True):
     if not os.path.isdir(base_path):
