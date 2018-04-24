@@ -9,7 +9,14 @@ __all__ = [ 'vgg11', 'vgg13', 'vgg16', 'vgg19',
 def vgg(vgg_name='vgg16_bn', num_classes=1000, pretrained=4, mode=('freeze', 'fine-tune')):
     vgg_model = torchvision.models.__dict__[vgg_name]
     if pretrained == -1:
-        return vgg_model(pretrained=False, num_classes=num_classes)
+        neural_network = vgg_model(pretrained=False, num_classes=num_classes)
+        neural_network.meta = {
+            'base_model': vgg_name,
+            'num_classes': num_classes,
+            'pretrained': pretrained,
+            'mode': mode
+        }
+        return neural_network
 
     neural_network = vgg_model(pretrained=True)
     neural_network.classifier._modules['6'] = torch.nn.Linear(4096, num_classes)
@@ -34,6 +41,12 @@ def vgg(vgg_name='vgg16_bn', num_classes=1000, pretrained=4, mode=('freeze', 'fi
         else:
             apply_mode(layer, mode[1])
 
+    neural_network.meta = {
+        'base_model': vgg_name,
+        'num_classes': num_classes,
+        'pretrained': pretrained,
+        'mode': mode
+    }
     return neural_network
 
 def vgg11(**kwargs): return vgg(vgg_name='vgg11', **kwargs)

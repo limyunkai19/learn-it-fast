@@ -8,7 +8,14 @@ __all__ = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
 def resnet(resnet_name='resnet50', num_classes=1000, pretrained=4, mode=('freeze', 'fine-tune')):
     resnet_model = torchvision.models.__dict__[resnet_name]
     if pretrained == -1:
-        return resnet_model(pretrained=False, num_classes=num_classes)
+        neural_network = resnet_model(pretrained=False, num_classes=num_classes)
+        neural_network.meta = {
+            'base_model': resnet_name,
+            'num_classes': num_classes,
+            'pretrained': pretrained,
+            'mode': mode
+        }
+        return neural_network
 
     neural_network = resnet_model(pretrained=True)
     in_features = neural_network.fc.in_features
@@ -23,6 +30,12 @@ def resnet(resnet_name='resnet50', num_classes=1000, pretrained=4, mode=('freeze
         else:
             apply_mode(layer, mode[1])
 
+    neural_network.meta = {
+        'base_model': resnet_name,
+        'num_classes': num_classes,
+        'pretrained': pretrained,
+        'mode': mode
+    }
     return neural_network
 
 def resnet18(**kwargs): return resnet(resnet_name='resnet18', **kwargs)
