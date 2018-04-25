@@ -29,7 +29,7 @@ class History:
     # def visualize(self, iter=False):
 
 
-def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=None, cuda=False, save_best_name=None):
+def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=None, cuda=False, save_best_name=None, verbose=2):
     history = History()
 
     if validation is not None:
@@ -86,9 +86,10 @@ def model_fit(model, train_loader, criterion, optimizer, epochs=1, validation=No
             history.iter_history['loss'].append(loss.data[0])
             history.iter_history['acc'].append(correct/len(target))
 
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(train_loader.sampler),
-                100. * batch_idx / len(train_loader), loss.data[0]))
+            if verbose >= 2:
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(train_loader.sampler),
+                    100. * batch_idx / len(train_loader), loss.data[0]))
         toc = time.time()
 
         loss = total_loss/len(train_loader.sampler)
