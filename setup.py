@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='learn-it-fast',
-    version='0.1.0',
+    version='0.1.1',
     packages=['learn_it_fast', 'learn_it_fast.models', 'learn_it_fast.datasets'],
     package_dir={'learn_it_fast': 'learn_it_fast'},
     license='MIT',
